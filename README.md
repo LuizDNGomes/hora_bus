@@ -2,6 +2,14 @@
 
 Este projeto permite consultar horários de viagem de forma prática e responsiva, ajudando os usuários a planejar suas viagens com facilidade.
 
+## Link de acesso
+[Hora Bus - Página Pública](https://luizdngomes.github.io/hora_bus/hora_bus.html)
+
+## QR Code
+<p align="center">
+    <img src="https://github.com/LuizDNGomes/hora_bus/blob/main/qrcode_luizdngomes.github.io.png" alt="QR Code" width="25%">
+</p>
+
 ## Sobre o Projeto
 A aplicação exibe horários de viagem com base em dados fornecidos. Desenvolvida com HTML, CSS e JavaScript, possui uma interface amigável e adaptada para dispositivos móveis.
 
