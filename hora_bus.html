@@ -325,6 +325,18 @@
             resultadoDiv.appendChild(div);
         }
     }
+
+    function compartilharSite() {
+        if (navigator.share) {
+            navigator.share({
+                title: 'Horários de Viagem - LuizDNGomes',
+                text: 'Confira os horários de viagem neste site!',
+                url: window.location.href
+            });
+        } else {
+            alert('O compartilhamento nativo não é suportado neste dispositivo. Copie o link manualmente: ' + window.location.href);
+        }
+    }
 </script>
 <footer>
     <div class="footer-creditos">
@@ -367,7 +379,19 @@
             ❗ ESSA APLICAÇÃO NÃO TEM VÍNCULO COM A EMPRESA PRESTADORA DO SERVIÇO DE TRANSPORTE.<br>
             🤖 Atualizado em 27/05/2025
         </p>
-        Visitante n°:<div align=center><a href='https://contador.s12.com.br'><img src='https://contador.s12.com.br/img-b0ccZwaWdAAc66yB-38.gif' border='0' alt='contador'></a><script type='text/Javascript' src='https://contador.s12.com.br/ad.js?id=b0ccZwaWdAAc66yB'></script></div>
+        
+        <button onclick="compartilharSite()" style="margin-bottom:10px; padding:10px 20px; border-radius:8px; background:#0077B5; color:white; font-weight:bold; border:none; cursor:pointer;">
+            📤 Compartilhe
+        </button>
+        
+        <br>
+        Visitante n°:
+        <div align="center">
+            <a href='https://contador.s12.com.br'>
+                <img src='https://contador.s12.com.br/img-b0ccZwaWdAAc66yB-38.gif' border='0' alt='contador'>
+            </a>
+            <script type='text/Javascript' src='https://contador.s12.com.br/ad.js?id=b0ccZwaWdAAc66yB'></script>
+        </div>
     </div>
 </footer>
 </body>
