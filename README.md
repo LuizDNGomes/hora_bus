@@ -62,15 +62,3 @@ Entre em contato comigo pelos seguintes canais:
 
 ## Aviso
 Os horários de viagem correspondem à saída do ônibus do ponto inicial e estão sujeitos a alterações sem aviso prévio. Em feriados, os horários podem ser modificados. Esta aplicação não possui vínculo com a empresa prestadora do serviço de transporte.
-
-Visitas: 
-
-...código existente...
-
-Visitas:
-
-<div align="center">
-  <a href='https://contador.s12.com.br'>
-    <img src='https://contador.s12.com.br/img-b0ccZwaWdAAc66yB-38.gif' border='0' alt='contador'>
-  </a>
-</div>
