@@ -65,4 +65,12 @@ Os horários de viagem correspondem à saída do ônibus do ponto inicial e est�
 
 Visitas: 
 
-Visitante n°:<div align=center><a href='https://www.counter12.com'><img src='https://www.counter12.com/img-cYWW689B9CbZ1WZB-38.gif' border='0' alt='contador de visitantes'></a>
+...código existente...
+
+Visitas:
+
+<div align="center">
+  <a href='https://contador.s12.com.br'>
+    <img src='https://contador.s12.com.br/img-b0ccZwaWdAAc66yB-38.gif' border='0' alt='contador'>
+  </a>
+</div>
