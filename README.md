@@ -60,6 +60,9 @@ Entre em contato comigo pelos seguintes canais:
     <img src="https://img.shields.io/badge/Teams-6264A7?style=for-the-badge&logo=microsoftteams&logoColor=white" alt="Microsoft Teams">
 </a>
 
-
 ## Aviso
 Os horários de viagem correspondem à saída do ônibus do ponto inicial e estão sujeitos a alterações sem aviso prévio. Em feriados, os horários podem ser modificados. Esta aplicação não possui vínculo com a empresa prestadora do serviço de transporte.
+
+Visitas: 
+<div align=center><a href='https://www.counter12.com'><img src='https://www.counter12.com/img-cYWW689B9CbZ1WZB-38.gif' border='0' alt='contador de visitantes'></div>
+
