@@ -307,20 +307,62 @@
         resultadoDiv.innerHTML = '';
 
         for (const [rota, lista] of Object.entries(rotas)) {
-            const futuros = lista.filter(h => h.hora > hora).sort((a, b) => a.hora.localeCompare(b.hora));
-
+            // Cria elementos para o cabeçalho e para os horários
             const div = document.createElement('div');
             div.className = 'rota';
-            div.innerHTML = `<strong>${rota}</strong><br>`;
+
+            // Cria o botão de expandir/recolher
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.style.marginRight = '8px';
+            btn.style.width = '32px';
+            btn.style.padding = '0 8px';
+            btn.style.background = 'none';
+            btn.style.color = '#333';
+            btn.style.fontSize = '20px';
+            btn.style.cursor = 'pointer';
+            btn.style.border = 'none';
+            btn.style.verticalAlign = 'middle';
+
+            btn.innerHTML = '▼'; // Por padrão, expandido
+
+            // Cria o cabeçalho da rota
+            const header = document.createElement('span');
+            header.style.fontWeight = 'bold';
+            header.style.fontSize = '16px';
+            header.textContent = rota;
+
+            // Cria o container dos horários
+            const horariosDiv = document.createElement('div');
+            horariosDiv.style.marginTop = '8px';
+
+            const futuros = lista.filter(h => h.hora >= hora).sort((a, b) => a.hora.localeCompare(b.hora));
 
             if (futuros.length > 0) {
                 futuros.forEach(item => {
                     const legenda = gerarLegenda(item.obs);
-                    div.innerHTML += legenda ? `${item.hora} - ${legenda}<br>` : `${item.hora}<br>`;
+                    horariosDiv.innerHTML += legenda ? `${item.hora} - ${legenda}<br>` : `${item.hora}<br>`;
                 });
             } else {
-                div.innerHTML += '<span class="sem-viagem">Não há mais viagens para a hora e data selecionada.</span>';
+                horariosDiv.innerHTML += '<span class="sem-viagem">Não há mais viagens para a hora e data selecionada.</span>';
             }
+
+            // Evento para expandir/recolher
+            btn.onclick = function () {
+                if (horariosDiv.style.display === 'none') {
+                    horariosDiv.style.display = '';
+                    btn.innerHTML = '▼';
+                } else {
+                    horariosDiv.style.display = 'none';
+                    btn.innerHTML = '►';
+                }
+            };
+
+            // Monta o bloco
+            div.appendChild(btn);
+            div.appendChild(header);
+            div.appendChild(document.createElement('br'));
+            div.appendChild(horariosDiv);
 
             resultadoDiv.appendChild(div);
         }
@@ -376,8 +418,8 @@
         <p class="aviso-transporte">
             ⚠️ Os horários de viagem informados pela empresa correspondem à saída do ônibus do ponto inicial e estão sujeitos a alterações sem aviso prévio. <br>
             📅 Em feriados, os horários podem sofrer modificações. <br>
-            ❗ ESSA APLICAÇÃO NÃO TEM VÍNCULO COM A EMPRESA PRESTADORA DO SERVIÇO DE TRANSPORTE.<br>
-            🤖 Atualizado em 27/05/2025
+            ❗ ESSA APLICAÇÃO NÃO TEM VÍNCULO COM A EMPRESA PRESTADORA DO SERVIÇO DE TRANSPORTE.<br><br>
+            🤖 Atualizado em 06/06/2025 - <br>Adição do botão para recolher e pequenos ajustes nos horários de busca.
         </p>
         
         <button onclick="compartilharSite()" style="margin-bottom:10px; padding:10px 20px; border-radius:8px; background:#8f9094; color:white; font-weight:bold; border:none; cursor:pointer;">
