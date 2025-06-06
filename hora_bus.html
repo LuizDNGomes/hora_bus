@@ -170,6 +170,8 @@
     <label>Hora: <input type="time" id="hora"></label><br>
     <button onclick="usarHoraAtual()">Hora Atual</button>
     <button onclick="procurarViagens()">Planejar Viagem</button>
+    <input type="text" id="buscaRota" placeholder="Buscar rota (ex: Ilhota, Gaspar...)" style="width:98%;margin:8px 0 12px 0;padding:10px;border-radius:8px;border:1px solid #ccc;font-size:16px;">
+    <!-- esse é o botão de busca para filtrar as rotas -->
 
     <div id="horarioAtual" class="horario-atual"></div>
     <div id="resultado"></div>
@@ -291,11 +293,12 @@
     function procurarViagens() {
         const data = document.getElementById('data').value;
         const hora = document.getElementById('hora').value;
+        const busca = document.getElementById('buscaRota').value.trim().toLowerCase();
         const resultadoDiv = document.getElementById('resultado');
         const horarioAtualDiv = document.getElementById('horarioAtual');
 
         if (!data || !hora) {
-            resultadoDiv.innerHTML = '<p style="color:red;">Informe data e hora corretamente.</p>';
+            resultadoDiv.innerHTML = '<p style="color:red;">Informe data e hora não informada.</p>';
             return;
         }
 
@@ -307,6 +310,8 @@
         resultadoDiv.innerHTML = '';
 
         for (const [rota, lista] of Object.entries(rotas)) {
+            if (busca && !rota.toLowerCase().includes(busca)) continue; // Filtro de busca
+
             // Cria elementos para o cabeçalho e para os horários
             const div = document.createElement('div');
             div.className = 'rota';
@@ -323,7 +328,6 @@
             btn.style.cursor = 'pointer';
             btn.style.border = 'none';
             btn.style.verticalAlign = 'middle';
-
             btn.innerHTML = '▼'; // Por padrão, expandido
 
             // Cria o cabeçalho da rota
@@ -367,6 +371,8 @@
             resultadoDiv.appendChild(div);
         }
     }
+
+    document.getElementById('buscaRota').addEventListener('input', procurarViagens);
 
     function compartilharSite() {
         if (navigator.share) {
@@ -419,7 +425,7 @@
             ⚠️ Os horários de viagem informados pela empresa correspondem à saída do ônibus do ponto inicial e estão sujeitos a alterações sem aviso prévio. <br>
             📅 Em feriados, os horários podem sofrer modificações. <br>
             ❗ ESSA APLICAÇÃO NÃO TEM VÍNCULO COM A EMPRESA PRESTADORA DO SERVIÇO DE TRANSPORTE.<br><br>
-            🤖 Atualizado em 06/06/2025 - <br>Adição do botão para recolher e pequenos ajustes nos horários de busca.
+            🤖 Atualizado em 06/06/2025 - <br>Adição do botão para recolher<br>Pequenos ajustes para a busca de horário<br>Adicionado um botão de buscar a rota que pesquisa o texto escrito no campo.
         </p>
         
         <button onclick="compartilharSite()" style="margin-bottom:10px; padding:10px 20px; border-radius:8px; background:#8f9094; color:white; font-weight:bold; border:none; cursor:pointer;">
