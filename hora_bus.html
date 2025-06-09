@@ -160,9 +160,55 @@
                 height: 28px;
             }
         }
+        .aviso-dinamico-custom {
+            display: none;
+            background: #fff;
+            color: #7a5a00;
+            font-weight: bold;
+            text-align: center;
+            padding: 12px 8px;
+            font-size: 18px;
+            border-radius: 0 0 8px 8px;
+            margin: 0 auto 18px auto;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            max-width: 700px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .aviso-dinamico-custom::before {
+            content: "";
+            display: block;
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 8px;
+            background: #d32f2f;
+            border-radius: 8px 0 0 8px;
+        }
+        @media (max-width: 800px) {
+            .aviso-dinamico-custom {
+                max-width: 98vw;
+                padding: 10px 4px;
+                font-size: 18px;
+            }
+        }
+        @media (max-width: 600px) {
+            .aviso-dinamico-custom {
+                font-size: 1em;
+                padding: 10px 4px;
+            }
+            .aviso-dinamico-custom::before {
+                width: 5px;
+            }
+        }
     </style>
 </head>
 <body>
+
+<!-- AVISO DINÂMICO -->
+<div id="aviso-dinamico" class="aviso-dinamico-custom"></div>
 
 <div class="container">
     <h2>Horários de Viagem</h2>
@@ -178,8 +224,22 @@
 </div>
 
 <script>
+    // AVISO DINÂMICO - Edite o texto abaixo para mostrar um aviso, ou deixe vazio ("") para ocultar.
+
+    const textoAviso = "⚠️ No dia 19/06 os horários adotados serão de Domingo!";
+
+    // Você pode alterar o texto acima para qualquer aviso que desejar, se vazio, ele apagará o aviso dinâmico.
+
+    const avisoDiv = document.getElementById('aviso-dinamico');
+    if (textoAviso && textoAviso.trim() !== "") {
+        avisoDiv.textContent = textoAviso;
+        avisoDiv.style.display = "block";
+    } else {
+        avisoDiv.style.display = "none";
+    }
+
     const legendas = {
-    "1": " Sai Ou Vai Até Barracão",
+    "1": " Sai do Barracão",
     "2": "Sai ou vai até Porto de Areia",
     "3": "Minas",
     "4": "Sai ou Vai Até Beagle",
@@ -193,8 +253,9 @@
     "12": "Minas",
     "13": "Sai ou Vai Até Círculo",
     "14": "Até Círculo",
+    "15": "Vai Até Barracão",
     };
-
+<!-- Essas legendas são usadas para descrever observações específicas dos horários de viagem. -->
 
 
     const horarios = {
@@ -208,11 +269,11 @@
                 {hora: "19:45"}, {hora: "20:15"}, {hora: "22:05"}
             ],
             "Blumenau -> Gaspar": [
-                {hora: "04:10"}, {hora: "05:15", obs: "1"}, {hora: "05:50"}, {hora: "06:30"},
+                {hora: "04:10"}, {hora: "05:15", obs: "15"}, {hora: "05:50"}, {hora: "06:30"},
                 {hora: "07:30"}, {hora: "08:45"}, {hora: "09:15"}, {hora: "10:35"},
                 {hora: "11:35"}, {hora: "12:30"}, {hora: "13:40"}, {hora: "14:30"},
-                {hora: "15:00"}, {hora: "15:50", obs: "1"}, {hora: "17:10"}, {hora: "17:40"},
-                {hora: "18:30"}, {hora: "19:45"}, {hora: "21:00"}, {hora: "22:07", obs: "1"},
+                {hora: "15:00"}, {hora: "15:50", obs: "15"}, {hora: "17:10"}, {hora: "17:40"},
+                {hora: "18:30"}, {hora: "19:45"}, {hora: "21:00"}, {hora: "22:07", obs: "15"},
                 {hora: "22:45"}
             ],
             "Gaspar -> Ilhota": [
@@ -425,7 +486,7 @@
             ⚠️ Os horários de viagem informados pela empresa correspondem à saída do ônibus do ponto inicial e estão sujeitos a alterações sem aviso prévio. <br>
             📅 Em feriados, os horários podem sofrer modificações. <br>
             ❗ ESSA APLICAÇÃO NÃO TEM VÍNCULO COM A EMPRESA PRESTADORA DO SERVIÇO DE TRANSPORTE.<br><br>
-            🤖 Atualizado em 06/06/2025 - <br>Adição do botão para recolher<br>Pequenos ajustes para a busca de horário<br>Adicionado um botão de buscar a rota que pesquisa o texto escrito no campo.
+            🤖 Atualizado em 09/06/2025 - <br>Adição do alerta acima do container.
         </p>
         
         <button onclick="compartilharSite()" style="margin-bottom:10px; padding:10px 20px; border-radius:8px; background:#8f9094; color:white; font-weight:bold; border:none; cursor:pointer;">
