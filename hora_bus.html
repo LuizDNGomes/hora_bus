@@ -6,6 +6,7 @@
     <title>Horários de Viagem - LuizDNGomes</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </div>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -169,12 +170,17 @@
             padding: 12px 8px;
             font-size: 18px;
             border-radius: 0 0 8px 8px;
-            margin: 0 auto 18px auto;
+            margin: 20px auto 20px auto;
             position: relative;
             box-shadow: 0 2px 8px rgba(0,0,0,0.04);
             max-width: 700px;
             width: 100%;
             box-sizing: border-box;
+        }
+        
+        /* Espaçamento específico para o widget meteorológico */
+        #ww_d18048fa7c915 {
+            margin-bottom: 20px;
         }
         .aviso-dinamico-custom::before {
             content: "";
@@ -206,10 +212,8 @@
     </style>
 </head>
 <body>
-
-<!-- AVISO DINÂMICO -->
+<div id="ww_d18048fa7c915" v='1.3' loc='id' a='{"t":"ticker","lang":"pt","sl_lpl":1,"ids":["wl4914"],"font":"Arial","sl_ics":"one_a","sl_sot":"celsius","cl_bkg":"image","cl_font":"#FFFFFF","cl_cloud":"#FFFFFF","cl_persp":"#81D4FA","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722"}'>Fonte de dados meteorológicos: <a href="https://wetterlang.de" id="ww_d18048fa7c915_u" target="_blank">Wetter 30 tage</a></div><script async src="https://app3.weatherwidget.org/js/?id=ww_d18048fa7c915"></script><!-- AVISO DINÂMICO -->
 <div id="aviso-dinamico" class="aviso-dinamico-custom"></div>
-
 <div class="container">
     <h2>Horários de Viagem</h2>
     <label>Data: <input type="date" id="data"></label>
@@ -226,7 +230,7 @@
 <script>
     // AVISO DINÂMICO - Edite o texto abaixo para mostrar um aviso, ou deixe vazio ("") para ocultar.
 
-    const textoAviso = "";
+    const textoAviso = "Adição do widget de clima.";
 
     // Você pode alterar o texto acima para qualquer aviso que desejar, se vazio, ele apagará o aviso dinâmico.
 
@@ -486,14 +490,12 @@
             ⚠️ Os horários de viagem informados pela empresa correspondem à saída do ônibus do ponto inicial e estão sujeitos a alterações sem aviso prévio. <br>
             📅 Em feriados, os horários podem sofrer modificações. <br>
             ❗ ESSA APLICAÇÃO NÃO TEM VÍNCULO COM A EMPRESA PRESTADORA DO SERVIÇO DE TRANSPORTE.<br><br>
-            🤖 Atualizado em 09/06/2025 - <br>Adição do alerta acima do container.
+            🤖 Atualizado em 09/07/2025 - <br>Adição do widget de clima.
         </p>
         
         <button onclick="compartilharSite()" style="margin-bottom:10px; padding:10px 20px; border-radius:8px; background:#8f9094; color:white; font-weight:bold; border:none; cursor:pointer;">
             📤 Compartilhe!
         </button>
-        
-        <br>
         Visitante n°:
         <div align="center">
             <a href='https://luizdngomes.github.io/hora_bus/hora_bus.html'>
@@ -502,6 +504,7 @@
             <script type='text/Javascript' src='https://contador.s12.com.br/ad.js?id=b0ccZwaWdAAc66yB'></script>
         </div>
     </div>
+    
 </footer>
 </body>
 
