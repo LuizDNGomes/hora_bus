@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="https://avatars.githubusercontent.com/u/39920231?v=4">
+    <title>Horários de Viagem - LuizDNGomes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</div>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #333;
+        }
+        .foto-perfil {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            overflow: hidden; /* Oculta partes da imagem fora do círculo */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+.foto-perfil img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+        h1 {
+            text-align: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff;
+        }
+        .aviso-transporte {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 14px;
+        font-weight: bold;
+        color: #ddd; /* Um laranja avermelhado para dar destaque */
+        }
+        .container {
+            background-color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            border-radius: 5px;
+            max-width: 700px;
+            margin: auto;
+            box-sizing: border-box;
+        }
+        .horario-atual {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #ddd;
+            border-radius: 5px;
+        }
+        .rota {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #eee;
+        }
+        .rota strong {
+            font-size: 16px;
+        }
+        .sem-viagem {
+            color: red;
+            font-weight: bold;
+        }
+        input, button {
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
+            width: 170px;
+            background: linear-gradient(45deg, #0077B5, #004c73);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-sizing: border-box;
+        }
+        button:hover {
+            transform: scale(1.012);
+            box-shadow: 0px 4px 10px rgba(0, 119, 181, 0.5);
+        }
+        /* Responsividade geral */
+        @media (max-width: 800px) {
+            .container {
+                max-width: 98vw;
+                padding: 10px;
+            }
+            input, button {
+                width: 100%;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                margin: 8px 0;
+                font-size: 18px;
+            }
+        }
+        @media (max-width: 500px) {
+            body {
+                margin: 5px;
+            }
+            h1, h2 {
+                font-size: 1.3em;
+            }
+            .container {
+                padding: 5px;
+                border-radius: 0;
+            }
+            .horario-atual {
+                font-size: 1em;
+                padding: 6px;
+            }
+            .rota {
+                font-size: 0.95em;
+                padding: 6px;
+            }
+            input, button {
+                font-size: 1em;
+                padding: 10px 0;
+            }
+        }
+        /* Rodapé responsivo */
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px 10px;
+            background-color: #333;
+            color: white;
+        }
+        .footer-creditos {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .footer-links a img {
+            height: 36px;
+            margin: 0 2px;
+        }
+        @media (max-width: 600px) {
+            .footer-creditos {
+                font-size: 1em;
+            }
+            .footer-links {
+                gap: 6px;
+            }
+            .footer-links a img {
+                height: 28px;
+            }
+        }
+        .aviso-dinamico-custom {
+            display: none;
+            background: #fff;
+            color: #7a5a00;
+            font-weight: bold;
+            text-align: center;
+            padding: 12px 8px;
+            font-size: 18px;
+            border-radius: 0 0 8px 8px;
+            margin: 20px auto 20px auto;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            max-width: 700px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        /* Espaçamento específico para o widget meteorológico */
+        #ww_d18048fa7c915 {
+            margin-bottom: 20px;
+        }
+        .aviso-dinamico-custom::before {
+            content: "";
+            display: block;
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 8px;
+            background: #d32f2f;
+            border-radius: 8px 0 0 8px;
+        }
+        @media (max-width: 800px) {
+            .aviso-dinamico-custom {
+                max-width: 98vw;
+                padding: 10px 4px;
+                font-size: 18px;
+            }
+        }
+        @media (max-width: 600px) {
+            .aviso-dinamico-custom {
+                font-size: 1em;
+                padding: 10px 4px;
+            }
+            .aviso-dinamico-custom::before {
+                width: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="ww_d18048fa7c915" v='1.3' loc='id' a='{"t":"ticker","lang":"pt","sl_lpl":1,"ids":["wl4914"],"font":"Arial","sl_ics":"one_a","sl_sot":"celsius","cl_bkg":"image","cl_font":"#FFFFFF","cl_cloud":"#FFFFFF","cl_persp":"#81D4FA","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722"}'>Fonte de dados meteorológicos: <a href="https://wetterlang.de" id="ww_d18048fa7c915_u" target="_blank">Wetter 30 tage</a></div><script async src="https://app3.weatherwidget.org/js/?id=ww_d18048fa7c915"></script><!-- AVISO DINÂMICO -->
+<div id="aviso-dinamico" class="aviso-dinamico-custom"></div>
+<div class="container">
+    <h2>Horários de Viagem</h2>
+    <label>Data: <input type="date" id="data"></label>
+    <label>Hora: <input type="time" id="hora"></label><br>
+    <button onclick="usarHoraAtual()">Hora Atual</button>
+    <button onclick="procurarViagens()">Planejar Viagem</button>
+    <input type="text" id="buscaRota" placeholder="Buscar rota (ex: Ilhota, Gaspar...)" style="width:98%;margin:8px 0 12px 0;padding:10px;border-radius:8px;border:1px solid #ccc;font-size:16px;">
+    <!-- esse é o botão de busca para filtrar as rotas -->
+
+    <div id="horarioAtual" class="horario-atual"></div>
+    <div id="resultado"></div>
+</div>
+
+<script>
+    // AVISO DINÂMICO - Edite o texto abaixo para mostrar um aviso, ou deixe vazio ("") para ocultar.
+
+<<<<<<< HEAD
+    const textoAviso = "Adição do widget de clima.";
+=======
+    const textoAviso = "⚠️ No dia 19/06 os horários adotados serão de Domingo!";
+>>>>>>> parent of a4e95ef (Atualizar o hora_bus.html)
+
+    // Você pode alterar o texto acima para qualquer aviso que desejar, se vazio, ele apagará o aviso dinâmico.
+
+    const avisoDiv = document.getElementById('aviso-dinamico');
+    if (textoAviso && textoAviso.trim() !== "") {
+        avisoDiv.textContent = textoAviso;
+        avisoDiv.style.display = "block";
+    } else {
+        avisoDiv.style.display = "none";
+    }
+
+    const legendas = {
+    "1": " Sai do Barracão",
+    "2": "Sai ou vai até Porto de Areia",
+    "3": "Minas",
+    "4": "Sai ou Vai Até Beagle",
+    "5": "Sai ou Vai Até Círculo",
+    "6": "Sai da Vineplast",
+    "7": "Vai Até St Terezinha",
+    "8": "Sai Do St Terezinha",
+    "9": "Sai do Baú Via Ilhota",
+    "10": "Sai de Blumenau Via Ilhota",
+    "11": "sai ou vai até Porto de Areia",
+    "12": "Minas",
+    "13": "Sai ou Vai Até Círculo",
+    "14": "Até Círculo",
+    "15": "Vai Até Barracão",
+    };
+<!-- Essas legendas são usadas para descrever observações específicas dos horários de viagem. -->
+
+
+    const horarios = {
+        uteis: {
+            "Gaspar -> Blumenau": [
+                {hora: "03:35"}, {hora: "04:20"}, {hora: "05:05"}, {hora: "05:40"},
+                {hora: "05:50"}, {hora: "06:15", obs: "1"}, {hora: "07:05"},
+                {hora: "08:30"}, {hora: "10:15"}, {hora: "11:35"}, {hora: "12:00"},
+                {hora: "13:25"}, {hora: "14:10"}, {hora: "14:45"}, {hora: "15:55"},
+                {hora: "16:30"}, {hora: "16:45"}, {hora: "17:00", obs: "1"},
+                {hora: "19:45"}, {hora: "20:15"}, {hora: "22:05"}
+            ],
+            "Blumenau -> Gaspar": [
+                {hora: "04:10"}, {hora: "05:15", obs: "15"}, {hora: "05:50"}, {hora: "06:30"},
+                {hora: "07:30"}, {hora: "08:45"}, {hora: "09:15"}, {hora: "10:35"},
+                {hora: "11:35"}, {hora: "12:30"}, {hora: "13:40"}, {hora: "14:30"},
+                {hora: "15:00"}, {hora: "15:50", obs: "15"}, {hora: "17:10"}, {hora: "17:40"},
+                {hora: "18:30"}, {hora: "19:45"}, {hora: "21:00"}, {hora: "22:07", obs: "15"},
+                {hora: "22:45"}
+            ],
+            "Gaspar -> Ilhota": [
+                {hora: "05:10", obs: "5"}, {hora: "06:15", obs: "4"},
+                {hora: "16:00", obs: "5"}, {hora: "22:10", obs: "2,3,6"}
+            ],
+            "Ilhota -> Gaspar": [
+                {hora: "04:00", obs: "2,5"}, {hora: "14:30", obs: "5"},
+                {hora: "18:40", obs: "5"}
+            ],
+            "Ilhota -> Blumenau": [
+                {hora: "05:50", obs: "2"}, {hora: "06:20"}, {hora: "07:10"},
+                {hora: "09:00"}, {hora: "10:45"}, {hora: "11:40", obs: "3"}, {hora: "12:14"},
+                {hora: "13:00"}, {hora: "14:50"}, {hora: "16:50"}, {hora: "18:05"}, {hora: "21:00"}
+            ],
+            "Blumenau -> Ilhota": [
+                {hora: "06:45"}, {hora: "08:00"}, {hora: "10:00"}, {hora: "11:10"},
+                {hora: "12:00", obs: "2"}, {hora: "13:10", obs: "2"}, {hora: "16:25", obs: "2"},
+                {hora: "17:20"}, {hora: "18:05"}, {hora: "19:00"}, {hora: "22:10"}
+            ],
+            "Círculo -> St. Terezinha": [
+                {hora: "12:45", obs: "7"}, {hora: "22:00", obs: "8"}
+            ],
+            "Baú -> Blumenau": [{hora: "05:35", obs: "9"}],
+            "Blumenau -> Baú": [{hora: "12:00", obs: "10"}]
+        },
+        sabado: {
+            "Gaspar -> Blumenau": [
+                {hora: "03:35"}, {hora: "04:20"}, {hora: "05:05"}, {hora: "06:20"},
+                {hora: "07:05"}, {hora: "09:00"}, {hora: "11:05"}, {hora: "12:10"}
+            ],
+            "Blumenau -> Gaspar": [
+                {hora: "04:12"}, {hora: "05:15"}, {hora: "06:20"}, {hora: "07:15"},
+                {hora: "07:50"}, {hora: "10:30"}, {hora: "12:10"}, {hora: "13:00"}
+            ],
+            "Gaspar -> Ilhota": [
+                {hora: "05:10", obs: "11,13"}, {hora: "13:15", obs: "11,12,13"}
+            ],
+            "Ilhota -> Gaspar": [
+                {hora: "04:00", obs: "11,13"}, {hora: "11:00", obs: "13"}
+            ],
+            "Ilhota -> Blumenau": [
+                {hora: "07:00", obs: "12"}, {hora: "07:30"}, {hora: "12:45"}
+            ],
+            "Blumenau -> Ilhota": [
+                {hora: "08:40"}, {hora: "14:15"}
+            ]
+        },
+        domingo: {
+            "Blumenau -> Gaspar": [{hora: "21:00", obs: "14"}],
+            "Ilhota -> Gaspar": [{hora: "21:00", obs: "14"}]
+        }
+    };
+
+    function detectarTipoDia(data) {
+        const dia = new Date(data).getDay();
+        if (dia === 6) return 'domingo';
+        if (dia === 5) return 'sabado';
+        return 'uteis';
+    }
+
+    function gerarLegenda(obs) {
+        if (!obs) return "";
+        const lista = obs.split(',').map(o => o.trim()).map(o => legendas[o] || `Obs ${o}`);
+        return lista.join('; ');
+    }
+
+    function usarHoraAtual() {
+        const agora = new Date();
+        const data = agora.toISOString().split('T')[0];
+        const hora = agora.getHours().toString().padStart(2, '0') + ':' +
+                     agora.getMinutes().toString().padStart(2, '0');
+
+        document.getElementById('data').value = data;
+        document.getElementById('hora').value = hora;
+    }
+
+    function procurarViagens() {
+        const data = document.getElementById('data').value;
+        const hora = document.getElementById('hora').value;
+        const busca = document.getElementById('buscaRota').value.trim().toLowerCase();
+        const resultadoDiv = document.getElementById('resultado');
+        const horarioAtualDiv = document.getElementById('horarioAtual');
+
+        if (!data || !hora) {
+            resultadoDiv.innerHTML = '<p style="color:red;">Data e hora não informada.</p>';
+            return;
+        }
+
+        const tipoDia = detectarTipoDia(data);
+        const rotas = horarios[tipoDia] || {};
+
+        horarioAtualDiv.innerHTML = `Data: ${data} - Hora: ${hora} (${tipoDia.toUpperCase()})`;
+
+        resultadoDiv.innerHTML = '';
+
+        for (const [rota, lista] of Object.entries(rotas)) {
+            if (busca && !rota.toLowerCase().includes(busca)) continue; // Filtro de busca
+
+            // Cria elementos para o cabeçalho e para os horários
+            const div = document.createElement('div');
+            div.className = 'rota';
+
+            // Cria o botão de expandir/recolher
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.style.marginRight = '8px';
+            btn.style.width = '32px';
+            btn.style.padding = '0 8px';
+            btn.style.background = 'none';
+            btn.style.color = '#333';
+            btn.style.fontSize = '20px';
+            btn.style.cursor = 'pointer';
+            btn.style.border = 'none';
+            btn.style.verticalAlign = 'middle';
+            btn.innerHTML = '▼'; // Por padrão, expandido
+
+            // Cria o cabeçalho da rota
+            const header = document.createElement('span');
+            header.style.fontWeight = 'bold';
+            header.style.fontSize = '16px';
+            header.textContent = rota;
+
+            // Cria o container dos horários
+            const horariosDiv = document.createElement('div');
+            horariosDiv.style.marginTop = '8px';
+
+            const futuros = lista.filter(h => h.hora >= hora).sort((a, b) => a.hora.localeCompare(b.hora));
+
+            if (futuros.length > 0) {
+                futuros.forEach(item => {
+                    const legenda = gerarLegenda(item.obs);
+                    horariosDiv.innerHTML += legenda ? `${item.hora} - ${legenda}<br>` : `${item.hora}<br>`;
+                });
+            } else {
+                horariosDiv.innerHTML += '<span class="sem-viagem">Não há mais viagens para a hora e data selecionada.</span>';
+            }
+
+            // Evento para expandir/recolher
+            btn.onclick = function () {
+                if (horariosDiv.style.display === 'none') {
+                    horariosDiv.style.display = '';
+                    btn.innerHTML = '▼';
+                } else {
+                    horariosDiv.style.display = 'none';
+                    btn.innerHTML = '►';
+                }
+            };
+
+            // Monta o bloco
+            div.appendChild(btn);
+            div.appendChild(header);
+            div.appendChild(document.createElement('br'));
+            div.appendChild(horariosDiv);
+
+            resultadoDiv.appendChild(div);
+        }
+    }
+
+    document.getElementById('buscaRota').addEventListener('input', procurarViagens);
+
+    function compartilharSite() {
+        if (navigator.share) {
+            navigator.share({
+                title: 'Horários de Viagem - LuizDNGomes',
+                text: 'Confira os horários de viagem neste site!',
+                url: window.location.href
+            });
+        } else {
+            alert('O compartilhamento nativo não é suportado neste dispositivo. Copie o link manualmente: ' + window.location.href);
+        }
+    }
+</script>
+<footer>
+    <div class="footer-creditos">
+        <img class="foto-perfil" src="https://avatars.githubusercontent.com/u/39920231?v=4" alt="Foto de LuizDNGomes">
+        <h3>📫 Como encontrar o desenvolvedor - LuizDNGomes</h3>
+
+        <div class="footer-links">
+            <a href="https://linktr.ee/luizdngomes" target="_blank">
+                <img src="https://img.shields.io/badge/linktree-42e45f?style=for-the-badge&logo=linktree&logoColor=white" alt="Linktree">
+            </a>
+            <a href="https://www.youtube.com/@BatalhaoWin" target="_blank">
+                <img src="https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="YouTube">
+            </a>
+            <a href="https://www.linkedin.com/in/luizdngomes/" target="_blank">
+                <img src="https://img.shields.io/badge/-LinkedIn-%230077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn">
+            </a>
+            <a href="https://answers.microsoft.com/pt-br/profile/f12fd1a9-c778-4718-95c7-3dcb12feb2c0" target="_blank">
+                <img src="https://img.shields.io/badge/Microsoft Answers-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Windows">
+            </a>
+            <a href="https://api.whatsapp.com/send?phone=5521976623377" target="_blank">
+                <img src="https://img.shields.io/badge/WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="WhatsApp">
+            </a>
+            <a href="https://www.instagram.com/luizdngomes" target="_blank">
+                <img src="https://img.shields.io/badge/-Instagram-%23E4405F?style=for-the-badge&logo=instagram&logoColor=white" alt="Instagram">
+            </a>
+            <a href="mailto:luizdngomes@live.com">
+                <img src="https://img.shields.io/badge/-Email-%222222?style=for-the-badge&logo=gmail&logoColor=white" alt="Email">
+            </a>
+            <a href="https://github.com/luizdngomes" target="_blank">
+                <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub">
+            </a>
+            <a href="https://teams.microsoft.com/l/chat/0/0?users=luizdngomes@live.com" target="_blank">
+                <img src="https://img.shields.io/badge/Teams-6264A7?style=for-the-badge&logo=microsoftteams&logoColor=white" alt="Teams">
+            </a>
+        </div>
+        
+        <p class="aviso-transporte">
+            ⚠️ Os horários de viagem informados pela empresa correspondem à saída do ônibus do ponto inicial e estão sujeitos a alterações sem aviso prévio. <br>
+            📅 Em feriados, os horários podem sofrer modificações. <br>
+            ❗ ESSA APLICAÇÃO NÃO TEM VÍNCULO COM A EMPRESA PRESTADORA DO SERVIÇO DE TRANSPORTE.<br><br>
+            🤖 Atualizado em 09/07/2025 - <br>Adição do widget de clima.
+        </p>
+        
+        <button onclick="compartilharSite()" style="margin-bottom:10px; padding:10px 20px; border-radius:8px; background:#8f9094; color:white; font-weight:bold; border:none; cursor:pointer;">
+            📤 Compartilhe!
+        </button>
+        Visitante n°:
+        <div align="center">
+            <a href='https://luizdngomes.github.io/hora_bus/hora_bus.html'>
+                <img src='https://contador.s12.com.br/img-b0ccZwaWdAAc66yB-38.gif' border='0' alt='contador'>
+            </a>
+            <script type='text/Javascript' src='https://contador.s12.com.br/ad.js?id=b0ccZwaWdAAc66yB'></script>
+        </div>
+    </div>
+    
+</footer>
+</body>
+
+</html>
