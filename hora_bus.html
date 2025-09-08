@@ -16,27 +16,30 @@
             width: 150px;
             height: 150px;
             border-radius: 50%;
-            overflow: hidden; /* Oculta partes da imagem fora do círculo */
+            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
         }
         .sino-btn {
             cursor: pointer;
-            margin-left: 5px;
+            margin-left: 8px;
             background: none;
             border: none;
             color: #0077B5;
-            font-size: 18px;
-            padding: 0;
+            font-size: 24px;
+            padding: 6px 10px;
             display: inline-flex;
             align-items: center;
             vertical-align: middle;
             line-height: 1;
+            transition: background-color 0.3s, transform 0.2s;
+            border-radius: 50%;
         }
-        .sino-btn:hover {
+        .sino-btn:hover, .sino-btn:active {
             color: #004c73;
             transform: scale(1.2);
+            background-color: rgba(0, 119, 181, 0.1);
         }
         .alerta-proximo {
             cursor: pointer;
@@ -44,37 +47,75 @@
             background: none;
             border: none;
             color: #0077B5;
-            font-size: 18px;
+            font-size: 24px;
             vertical-align: middle;
-            padding: 0;
+            padding: 6px 10px;
             display: inline-flex;
             align-items: center;
+            transition: background-color 0.3s, transform 0.2s;
+            border-radius: 50%;
         }
-        .alerta-proximo:hover {
+        .alerta-proximo:hover, .alerta-proximo:active {
             color: #004c73;
             transform: scale(1.2);
+            background-color: rgba(0, 119, 181, 0.1);
+        }
+        @media (hover: none) {
+            .sino-btn:active, .alerta-proximo:active {
+                background-color: rgba(0, 119, 181, 0.2);
+                transform: scale(1.2);
+            }
         }
         .horario-item {
             display: flex;
             align-items: center;
-            margin-bottom: 5px;
+            justify-content: space-between;
+            margin-bottom: 8px;
             cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 4px;
+            padding: 10px 12px;
+            border-radius: 8px;
             transition: background-color 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         .horario-item:hover {
             background-color: #e9ecef;
+        }
+        .horario-item:active {
+            background-color: #d2d8de;
         }
         .info-notificacao {
             background-color: #f8f9fa;
             border-left: 4px solid #0077B5;
             margin: 15px 0;
-            padding: 12px;
-            border-radius: 4px;
-            font-size: 14px;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 16px;
             color: #333;
             text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .notificacao-feedback {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 119, 181, 0.9);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 16px;
+            z-index: 1000;
+            max-width: 90%;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            animation: fadeInOut 3s forwards;
+            display: none;
+        }
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translate(-50%, 20px); }
+            10% { opacity: 1; transform: translate(-50%, 0); }
+            90% { opacity: 1; transform: translate(-50%, 0); }
+            100% { opacity: 0; transform: translate(-50%, -20px); }
         }
 
 .foto-perfil img {
@@ -163,20 +204,37 @@
                 font-size: 1.3em;
             }
             .container {
-                padding: 5px;
-                border-radius: 0;
+                padding: 10px;
+                border-radius: 8px;
             }
             .horario-atual {
                 font-size: 1em;
-                padding: 6px;
+                padding: 10px;
             }
             .rota {
                 font-size: 0.95em;
-                padding: 6px;
+                padding: 12px;
             }
             input, button {
                 font-size: 1em;
-                padding: 10px 0;
+                padding: 12px 0;
+            }
+            .sino-btn, .alerta-proximo {
+                font-size: 28px;
+                padding: 8px 12px;
+                min-width: 44px;
+                min-height: 44px;
+                display: flex;
+                justify-content: center;
+            }
+            .horario-item {
+                padding: 12px;
+                margin-bottom: 10px;
+            }
+            .info-notificacao {
+                padding: 15px 10px;
+                font-size: 15px;
+                margin: 15px 0;
             }
         }
         /* Rodapé responsivo */
@@ -262,6 +320,13 @@
             .aviso-dinamico-custom::before {
                 width: 5px;
             }
+            .notificacao-feedback {
+                padding: 15px 15px;
+                font-size: 16px;
+                border-radius: 30px;
+                max-width: 85%;
+                bottom: 30px;
+            }
         }
     </style>
 </head>
@@ -278,20 +343,19 @@
     <!-- esse é o botão de busca para filtrar as rotas -->
     
     <div class="info-notificacao">
-        <p>🔔 Clique no sino para ser notificado quando o ônibus sair do ponto final.</p>
-        <p>⚠️ Não esqueça de habilitar as notificações deste site para que possamos te avisar!</p>
+        <p>🔔 Toque no sino para ser notificado quando o ônibus sair do ponto final.</p>
+        <p>⚠️ Você precisa permitir notificações deste site para receber os avisos!</p>
     </div>
 
     <div id="horarioAtual" class="horario-atual"></div>
     <div id="resultado"></div>
+    <div id="notificacao-feedback" class="notificacao-feedback"></div>
 </div>
 
 <script>
-    // AVISO DINÂMICO - Edite o texto abaixo para mostrar um aviso, ou deixe vazio ("") para ocultar.
-
+// Texto do aviso dinâmico - pode ser atualizado conforme necessário
     const textoAviso = "";
 
-    // Você pode alterar o texto acima para qualquer aviso que desejar, se vazio, ele apagará o aviso dinâmico.
 
     const avisoDiv = document.getElementById('aviso-dinamico');
     if (textoAviso && textoAviso.trim() !== "") {
@@ -434,13 +498,11 @@
         resultadoDiv.innerHTML = '';
 
         for (const [rota, lista] of Object.entries(rotas)) {
-            if (busca && !rota.toLowerCase().includes(busca)) continue; // Filtro de busca
+            if (busca && !rota.toLowerCase().includes(busca)) continue;
 
-            // Cria elementos para o cabeçalho e para os horários
             const div = document.createElement('div');
             div.className = 'rota';
 
-            // Cria o botão de expandir/recolher
             const btn = document.createElement('button');
             btn.type = 'button';
             btn.style.marginRight = '8px';
@@ -452,32 +514,28 @@
             btn.style.cursor = 'pointer';
             btn.style.border = 'none';
             btn.style.verticalAlign = 'middle';
-            btn.innerHTML = '▼'; // Por padrão, expandido
+            btn.innerHTML = '▼';
 
-            // Cria o cabeçalho da rota
             const header = document.createElement('span');
             header.style.fontWeight = 'bold';
             header.style.fontSize = '16px';
             header.textContent = rota;
             
-            // Adiciona botão de alerta para próximo horário
             const alertaProximo = document.createElement('button');
             alertaProximo.className = 'alerta-proximo';
             alertaProximo.innerHTML = '🔔';
             alertaProximo.title = 'Receber alerta para próximo horário';
+            alertaProximo.setAttribute('aria-label', 'Alerta próximo horário');
             alertaProximo.onclick = function() {
                 const futuros = lista.filter(h => h.hora >= hora).sort((a, b) => a.hora.localeCompare(b.hora));
                 if (futuros.length > 0) {
                     const proximoHorario = futuros[0].hora;
-                    if (confirm(`Deseja receber uma notificação quando o próximo ônibus da rota "${rota}" das ${proximoHorario} sair do ponto final?`)) {
-                        configurarAlerta(rota, proximoHorario);
-                    }
+                    configurarAlerta(rota, proximoHorario);
                 } else {
-                    alert('Não há mais horários disponíveis para hoje nesta rota.');
+                    mostrarFeedback('Não há mais horários disponíveis para hoje nesta rota.');
                 }
             };
 
-            // Cria o container dos horários
             const horariosDiv = document.createElement('div');
             horariosDiv.style.marginTop = '8px';
 
@@ -485,41 +543,39 @@
 
             if (futuros.length > 0) {
                 futuros.forEach(item => {
-                    // Cria um container para alinhar horizontalmente o horário e o botão
                     const itemContainer = document.createElement('div');
                     itemContainer.className = 'horario-item';
-                    itemContainer.title = 'Clique para receber alerta para este horário';
+                    itemContainer.title = 'Toque para receber alerta para este horário';
                     
-                    // Cria o elemento para o texto do horário
                     const horarioSpan = document.createElement('span');
                     const legenda = gerarLegenda(item.obs);
                     
                     horarioSpan.innerHTML = legenda ? `${item.hora} - ${legenda}` : `${item.hora}`;
+                    horarioSpan.style.flexGrow = '1';
                     
-                    // Cria ícone de sino
-                    const sinoSpan = document.createElement('span');
-                    sinoSpan.className = 'sino-btn';
-                    sinoSpan.innerHTML = '🔔';
+                    const sinoBtn = document.createElement('button');
+                    sinoBtn.className = 'sino-btn';
+                    sinoBtn.innerHTML = '🔔';
+                    sinoBtn.setAttribute('aria-label', 'Receber notificação');
                     
-                    // Adiciona ao container de item
                     itemContainer.appendChild(horarioSpan);
-                    itemContainer.appendChild(sinoSpan);
+                    itemContainer.appendChild(sinoBtn);
                     
-                    // Adiciona evento de clique ao container inteiro
-                    itemContainer.onclick = function() {
-                        if (confirm(`Deseja receber uma notificação quando o ônibus da rota "${rota}" das ${item.hora} sair do ponto final?`)) {
-                            configurarAlerta(rota, item.hora);
-                        }
+                    horarioSpan.onclick = function() {
+                        configurarAlerta(rota, item.hora);
                     };
                     
-                    // Adiciona o container de item ao container de horários
+                    sinoBtn.onclick = function(e) {
+                        e.stopPropagation();
+                        configurarAlerta(rota, item.hora);
+                    };
+                    
                     horariosDiv.appendChild(itemContainer);
                 });
             } else {
                 horariosDiv.innerHTML += '<span class="sem-viagem">Não há mais viagens para a hora e data selecionada.</span>';
             }
 
-            // Evento para expandir/recolher
             btn.onclick = function () {
                 if (horariosDiv.style.display === 'none') {
                     horariosDiv.style.display = '';
@@ -530,7 +586,6 @@
                 }
             };
 
-            // Monta o bloco
             div.appendChild(btn);
             div.appendChild(header);
             div.appendChild(alertaProximo);
@@ -543,67 +598,197 @@
 
     document.getElementById('buscaRota').addEventListener('input', procurarViagens);
 
-    // Função para solicitar permissão de notificação
+    function mostrarFeedback(mensagem, duracao = 3000) {
+        const feedback = document.getElementById('notificacao-feedback');
+        feedback.textContent = mensagem;
+        feedback.style.display = 'block';
+        
+        feedback.style.animation = 'none';
+        feedback.offsetHeight;
+        feedback.style.animation = 'fadeInOut ' + (duracao/1000) + 's forwards';
+        
+        setTimeout(() => {
+            feedback.style.display = 'none';
+        }, duracao);
+    }
+
+    function isDispositivoMovel() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+
     function solicitarPermissaoNotificacao() {
         if (!("Notification" in window)) {
-            alert("Este navegador não suporta notificações de desktop");
+            mostrarFeedback("Este dispositivo não suporta notificações");
+            return false;
         } else if (Notification.permission === "granted") {
             return true;
         } else if (Notification.permission !== "denied") {
             Notification.requestPermission().then(function (permission) {
                 if (permission === "granted") {
+                    mostrarFeedback("Notificações ativadas com sucesso!");
                     return true;
+                } else {
+                    mostrarFeedback("Notificações não foram permitidas");
+                    return false;
                 }
             });
         }
         return Notification.permission === "granted";
     }
 
-    // Função para configurar o alerta
     function configurarAlerta(rota, horario) {
         if (!solicitarPermissaoNotificacao()) {
-            alert("Você precisa permitir notificações para receber alertas de horários.");
+            mostrarFeedback("❌ Você precisa permitir notificações para receber alertas");
+            setTimeout(() => {
+                if (confirm("Deseja habilitar as notificações agora?")) {
+                    solicitarPermissaoNotificacao();
+                }
+            }, 1000);
             return;
         }
 
         const mensagem = `Rota: ${rota}\nO ônibus do horário: ${horario} saiu do ponto final.`;
         
-        // Obtém o horário atual e a hora configurada
         const agora = new Date();
         const [horas, minutos] = horario.split(':').map(Number);
         const horaProgramada = new Date(agora);
         
         horaProgramada.setHours(horas, minutos, 0);
         
-        // Se a hora já passou, não programa o alerta
         if (horaProgramada < agora) {
-            alert("Este horário já passou.");
+            mostrarFeedback("⚠️ Este horário já passou");
             return;
         }
         
-        // Calcula o tempo até o horário (em milissegundos)
         const tempoAteHorario = horaProgramada.getTime() - agora.getTime();
         
-        // Adiciona uma entrada visual na página para mostrar que o alerta foi programado
-        alert(`Alerta programado para a rota "${rota}" às ${horario}`);
+        const minutosAteHorario = Math.floor(tempoAteHorario / 60000);
+        const horasAteHorario = Math.floor(minutosAteHorario / 60);
+        const minutosRestantes = minutosAteHorario % 60;
         
-        // Programa o alerta
-        setTimeout(() => {
-            const notificacao = new Notification("Alerta de Ônibus", {
-                body: mensagem,
-                icon: "https://avatars.githubusercontent.com/u/39920231?v=4"
-            });
-            
-            notificacao.onclick = function() {
-                window.focus();
-                this.close();
+        let tempoFormatado = '';
+        if (horasAteHorario > 0) {
+            tempoFormatado = `${horasAteHorario}h ${minutosRestantes}min`;
+        } else {
+            tempoFormatado = `${minutosRestantes} minutos`;
+        }
+        
+        mostrarFeedback(`✓ Alerta programado: ${rota} às ${horario} (em ${tempoFormatado})`, 4000);
+        
+        try {
+            const alertasSalvos = JSON.parse(localStorage.getItem('alertasOnibus') || '[]');
+            const novoAlerta = {
+                rota: rota,
+                horario: horario,
+                timestamp: horaProgramada.getTime()
             };
+            alertasSalvos.push(novoAlerta);
+            localStorage.setItem('alertasOnibus', JSON.stringify(alertasSalvos));
+        } catch (e) {
+            console.error("Erro ao salvar alerta:", e);
+        }
+        
+        setTimeout(() => {
+            try {
+                if (isDispositivoMovel() && navigator.vibrate) {
+                    navigator.vibrate([200, 100, 200]);
+                }
+                
+                const notificacao = new Notification("Alerta de Ônibus", {
+                    body: mensagem,
+                    icon: "https://avatars.githubusercontent.com/u/39920231?v=4",
+                    badge: "https://avatars.githubusercontent.com/u/39920231?v=4",
+                    vibrate: [200, 100, 200, 100, 200],
+                    tag: `onibus-${rota}-${horario}`,
+                    renotify: true
+                });
+                
+                notificacao.onclick = function() {
+                    window.focus();
+                    this.close();
+                };
+                
+                try {
+                    const alertasSalvos = JSON.parse(localStorage.getItem('alertasOnibus') || '[]');
+                    const alertasAtualizados = alertasSalvos.filter(alerta => 
+                        !(alerta.rota === rota && alerta.horario === horario)
+                    );
+                    localStorage.setItem('alertasOnibus', JSON.stringify(alertasAtualizados));
+                } catch (e) {
+                    console.error("Erro ao remover alerta:", e);
+                }
+            } catch (e) {
+                console.error("Erro ao exibir notificação:", e);
+            }
         }, tempoAteHorario);
     }
 
-    // Verificar permissão de notificação ao carregar a página
     window.addEventListener('load', function() {
-        solicitarPermissaoNotificacao();
+        if (Notification.permission === "granted") {
+            mostrarFeedback("Notificações estão ativadas", 2000);
+        } else if (Notification.permission !== "denied") {
+            if (isDispositivoMovel()) {
+                const infoDiv = document.querySelector('.info-notificacao');
+                const btnPermissao = document.createElement('button');
+                btnPermissao.innerHTML = '🔔 Permitir Notificações';
+                btnPermissao.style.backgroundColor = '#0077B5';
+                btnPermissao.style.color = 'white';
+                btnPermissao.style.border = 'none';
+                btnPermissao.style.padding = '12px 20px';
+                btnPermissao.style.borderRadius = '25px';
+                btnPermissao.style.fontSize = '16px';
+                btnPermissao.style.margin = '10px auto';
+                btnPermissao.style.display = 'block';
+                btnPermissao.style.cursor = 'pointer';
+                btnPermissao.onclick = solicitarPermissaoNotificacao;
+                infoDiv.appendChild(btnPermissao);
+            } else {
+                solicitarPermissaoNotificacao();
+            }
+        }
+        
+        try {
+            const alertasSalvos = JSON.parse(localStorage.getItem('alertasOnibus') || '[]');
+            const agora = new Date().getTime();
+            
+            const alertasFuturos = alertasSalvos.filter(alerta => alerta.timestamp > agora);
+            
+            if (alertasFuturos.length > 0) {
+                mostrarFeedback(`Você tem ${alertasFuturos.length} alerta(s) programado(s)`, 3000);
+                
+                alertasFuturos.forEach(alerta => {
+                    const tempoRestante = alerta.timestamp - agora;
+                    
+                    setTimeout(() => {
+                        const notificacao = new Notification("Alerta de Ônibus", {
+                            body: `Rota: ${alerta.rota}\nO ônibus do horário: ${alerta.horario} saiu do ponto final.`,
+                            icon: "https://avatars.githubusercontent.com/u/39920231?v=4",
+                            badge: "https://avatars.githubusercontent.com/u/39920231?v=4",
+                            vibrate: [200, 100, 200, 100, 200],
+                            tag: `onibus-${alerta.rota}-${alerta.horario}`,
+                            renotify: true
+                        });
+                        
+                        if (isDispositivoMovel() && navigator.vibrate) {
+                            navigator.vibrate([200, 100, 200]);
+                        }
+                        
+                        notificacao.onclick = function() {
+                            window.focus();
+                            this.close();
+                        };
+                        
+                        const alertasAtualizados = JSON.parse(localStorage.getItem('alertasOnibus') || '[]')
+                            .filter(a => !(a.rota === alerta.rota && a.horario === alerta.horario));
+                        localStorage.setItem('alertasOnibus', JSON.stringify(alertasAtualizados));
+                    }, tempoRestante);
+                });
+                
+                localStorage.setItem('alertasOnibus', JSON.stringify(alertasFuturos));
+            }
+        } catch (e) {
+            console.error("Erro ao restaurar alertas:", e);
+        }
     });
 
     function compartilharSite() {
@@ -657,7 +842,7 @@
             ⚠️ Os horários de viagem informados pela empresa correspondem à saída do ônibus do ponto inicial e estão sujeitos a alterações sem aviso prévio. <br>
             📅 Em feriados, os horários podem sofrer modificações. <br>
             ❗ ESSA APLICAÇÃO NÃO TEM VÍNCULO COM A EMPRESA PRESTADORA DO SERVIÇO DE TRANSPORTE.<br><br>
-            🤖 Atualizado em 08/09/2025 - <br>Novo sistema de notificações<br> Seja informado do próximo horário do ônibus ou do horário desejado! (fase de teste)
+            🤖 Atualizado em 08/09/2025 - <br>Sistema de notificações otimizado para celulares<br>Toque no sino para ser informado do próximo horário do ônibus ou do horário desejado!
         </p>
         
         <button onclick="compartilharSite()" style="margin-bottom:10px; padding:10px 20px; border-radius:8px; background:#8f9094; color:white; font-weight:bold; border:none; cursor:pointer;">
