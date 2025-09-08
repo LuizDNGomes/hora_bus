@@ -27,7 +27,12 @@
             background: none;
             border: none;
             color: #0077B5;
-            font-size: 16px;
+            font-size: 18px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            vertical-align: middle;
+            line-height: 1;
         }
         .sino-btn:hover {
             color: #004c73;
@@ -41,10 +46,35 @@
             color: #0077B5;
             font-size: 18px;
             vertical-align: middle;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
         }
         .alerta-proximo:hover {
             color: #004c73;
             transform: scale(1.2);
+        }
+        .horario-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        .horario-item:hover {
+            background-color: #e9ecef;
+        }
+        .info-notificacao {
+            background-color: #f8f9fa;
+            border-left: 4px solid #0077B5;
+            margin: 15px 0;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #333;
+            text-align: center;
         }
 
 .foto-perfil img {
@@ -246,6 +276,11 @@
     <button onclick="procurarViagens()">Planejar Viagem</button>
     <input type="text" id="buscaRota" placeholder="Buscar rota (ex: Ilhota, Gaspar...)" style="width:98%;margin:8px 0 12px 0;padding:10px;border-radius:8px;border:1px solid #ccc;font-size:16px;">
     <!-- esse é o botão de busca para filtrar as rotas -->
+    
+    <div class="info-notificacao">
+        <p>🔔 Clique no sino para ser notificado quando o ônibus sair do ponto final.</p>
+        <p>⚠️ Não esqueça de habilitar as notificações deste site para que possamos te avisar!</p>
+    </div>
 
     <div id="horarioAtual" class="horario-atual"></div>
     <div id="resultado"></div>
@@ -434,7 +469,9 @@
                 const futuros = lista.filter(h => h.hora >= hora).sort((a, b) => a.hora.localeCompare(b.hora));
                 if (futuros.length > 0) {
                     const proximoHorario = futuros[0].hora;
-                    configurarAlerta(rota, proximoHorario);
+                    if (confirm(`Deseja receber uma notificação quando o próximo ônibus da rota "${rota}" das ${proximoHorario} sair do ponto final?`)) {
+                        configurarAlerta(rota, proximoHorario);
+                    }
                 } else {
                     alert('Não há mais horários disponíveis para hoje nesta rota.');
                 }
@@ -448,24 +485,35 @@
 
             if (futuros.length > 0) {
                 futuros.forEach(item => {
+                    // Cria um container para alinhar horizontalmente o horário e o botão
+                    const itemContainer = document.createElement('div');
+                    itemContainer.className = 'horario-item';
+                    itemContainer.title = 'Clique para receber alerta para este horário';
+                    
+                    // Cria o elemento para o texto do horário
                     const horarioSpan = document.createElement('span');
                     const legenda = gerarLegenda(item.obs);
                     
                     horarioSpan.innerHTML = legenda ? `${item.hora} - ${legenda}` : `${item.hora}`;
                     
-                    // Cria botão de sino
-                    const sinoBtn = document.createElement('button');
-                    sinoBtn.className = 'sino-btn';
-                    sinoBtn.innerHTML = '🔔';
-                    sinoBtn.title = 'Receber alerta para este horário';
-                    sinoBtn.onclick = function() {
-                        configurarAlerta(rota, item.hora);
+                    // Cria ícone de sino
+                    const sinoSpan = document.createElement('span');
+                    sinoSpan.className = 'sino-btn';
+                    sinoSpan.innerHTML = '🔔';
+                    
+                    // Adiciona ao container de item
+                    itemContainer.appendChild(horarioSpan);
+                    itemContainer.appendChild(sinoSpan);
+                    
+                    // Adiciona evento de clique ao container inteiro
+                    itemContainer.onclick = function() {
+                        if (confirm(`Deseja receber uma notificação quando o ônibus da rota "${rota}" das ${item.hora} sair do ponto final?`)) {
+                            configurarAlerta(rota, item.hora);
+                        }
                     };
                     
-                    // Adiciona ao container
-                    horariosDiv.appendChild(horarioSpan);
-                    horariosDiv.appendChild(sinoBtn);
-                    horariosDiv.appendChild(document.createElement('br'));
+                    // Adiciona o container de item ao container de horários
+                    horariosDiv.appendChild(itemContainer);
                 });
             } else {
                 horariosDiv.innerHTML += '<span class="sem-viagem">Não há mais viagens para a hora e data selecionada.</span>';
@@ -609,7 +657,7 @@
             ⚠️ Os horários de viagem informados pela empresa correspondem à saída do ônibus do ponto inicial e estão sujeitos a alterações sem aviso prévio. <br>
             📅 Em feriados, os horários podem sofrer modificações. <br>
             ❗ ESSA APLICAÇÃO NÃO TEM VÍNCULO COM A EMPRESA PRESTADORA DO SERVIÇO DE TRANSPORTE.<br><br>
-            🤖 Atualizado em 08/08/2025 - <br>Removemos o contador de visitas<br> Desconfio que ele estava assumindo o controle da tela e inserindo propagandas.
+            🤖 Atualizado em 08/09/2025 - <br>Novo sistema de notificações<br> Seja informado do próximo horário do ônibus ou do horário desejado! (fase de teste)
         </p>
         
         <button onclick="compartilharSite()" style="margin-bottom:10px; padding:10px 20px; border-radius:8px; background:#8f9094; color:white; font-weight:bold; border:none; cursor:pointer;">
