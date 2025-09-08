@@ -334,8 +334,6 @@
     <button onclick="usarHoraAtual()">Hora Atual</button>
     <button onclick="procurarViagens()">Planejar Viagem</button>
     <input type="text" id="buscaRota" placeholder="Buscar rota (ex: Ilhota, Gaspar...)" style="width:98%;margin:8px 0 12px 0;padding:10px;border-radius:8px;border:1px solid #ccc;font-size:16px;">
-    <!-- esse é o botão de busca para filtrar as rotas -->
-
 
     <div id="horarioAtual" class="horario-atual"></div>
     <div id="resultado"></div>
@@ -543,17 +541,14 @@
                     
                     horarioSpan.innerHTML = legenda ? `${item.hora} - ${legenda}` : `${item.hora}`;
                     
-                    // Cria ícone de sino (agora é apenas visual)
                     const sinoSpan = document.createElement('span');
                     sinoSpan.className = 'sino-btn';
                     sinoSpan.innerHTML = '🔔';
                     sinoSpan.setAttribute('aria-label', 'Receber notificação');
                     
-                    // Adiciona ao container de item
                     itemContainer.appendChild(horarioSpan);
                     itemContainer.appendChild(sinoSpan);
                     
-                    // Todo o container é clicável
                     itemContainer.onclick = function() {
                         configurarAlerta(rota, item.hora);
                     };
@@ -791,7 +786,6 @@
         }
     }
     
-    // Função para limpar todas as notificações programadas
     function limparTodasNotificacoes() {
         try {
             localStorage.removeItem('alertasOnibus');
@@ -802,7 +796,6 @@
         }
     }
     
-    // Função para criar notificação de teste em 1 minuto
     function criarNotificacaoTeste() {
         if (!solicitarPermissaoNotificacao()) {
             mostrarFeedback("❌ Você precisa permitir notificações para receber alertas");
@@ -814,7 +807,6 @@
         const agora = new Date();
         const umMinutoDepois = new Date(agora.getTime() + 60000);
         
-        // Salvar alerta de teste no localStorage
         try {
             const alertasSalvos = JSON.parse(localStorage.getItem('alertasOnibus') || '[]');
             const novoAlerta = {
@@ -828,7 +820,6 @@
             console.error("Erro ao salvar alerta de teste:", e);
         }
         
-        // Programar a notificação de teste
         setTimeout(() => {
             try {
                 if (isDispositivoMovel() && navigator.vibrate) {
@@ -849,7 +840,7 @@
                     this.close();
                 };
                 
-                // Remover alerta de teste executado
+
                 try {
                     const alertasSalvos = JSON.parse(localStorage.getItem('alertasOnibus') || '[]');
                     const alertasAtualizados = alertasSalvos.filter(alerta => 
@@ -904,9 +895,11 @@
             ⚠️ Os horários de viagem informados pela empresa correspondem à saída do ônibus do ponto inicial e estão sujeitos a alterações sem aviso prévio. <br>
             📅 Em feriados, os horários podem sofrer modificações. <br>
             ❗ ESSA APLICAÇÃO NÃO TEM VÍNCULO COM A EMPRESA PRESTADORA DO SERVIÇO DE TRANSPORTE.<br><br>
-            🤖 Atualizado em 08/09/2025 - <br>Sistema de notificações otimizado para celulares<br>Toque no sino para ser informado do próximo horário do ônibus ou do horário desejado!
+            🤖 Atualizado em 08/09/2025 - <br>Sistema de notificações otimizado para celulares<br>Toque no sino para ser informado do próximo horário do ônibus ou do horário desejado! <br> Para limpar todas as notificações, toque no botão abaixo.
         </p>
-        
+        <button onclick="compartilharSite()" style="margin-bottom:10px; padding:10px 20px; border-radius:8px; background:#8f9094; color:white; font-weight:bold; border:none; cursor:pointer;">
+            📤 Compartilhe!
+        </button>
         <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 15px 0;">
             <button onclick="limparTodasNotificacoes()" style="padding:10px 15px; border-radius:8px; background:#44cc11; color:white; font-weight:bold; border:none; cursor:pointer; flex: 1; min-width: 150px; max-width: 250px;">
                 🧹 Limpar todas as notificações
@@ -914,11 +907,10 @@
             <button onclick="criarNotificacaoTeste()" style="padding:10px 15px; border-radius:8px; background:#032c88; color:white; font-weight:bold; border:none; cursor:pointer; flex: 1; min-width: 150px; max-width: 250px;">
                 🔔 Notificação de teste - 1 min
             </button>
+            
         </div>
+        Esse site não armazena nenhuma informação sua. <br> Todos os dados são processados localmente no seu navegador.<br>
         
-        <button onclick="compartilharSite()" style="margin-bottom:10px; padding:10px 20px; border-radius:8px; background:#8f9094; color:white; font-weight:bold; border:none; cursor:pointer;">
-            📤 Compartilhe!
-        </button>
     </div>
     
 </footer>
