@@ -5,7 +5,6 @@
     <link rel="icon" type="image/png" href="https://avatars.githubusercontent.com/u/39920231?v=4">
     <title>Horários de Viagem - LuizDNGomes</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</div>
 
     <style>
         body {
@@ -21,6 +20,31 @@
             display: flex;
             justify-content: center;
             align-items: center;
+        }
+        .sino-btn {
+            cursor: pointer;
+            margin-left: 5px;
+            background: none;
+            border: none;
+            color: #0077B5;
+            font-size: 16px;
+        }
+        .sino-btn:hover {
+            color: #004c73;
+            transform: scale(1.2);
+        }
+        .alerta-proximo {
+            cursor: pointer;
+            margin-left: 10px;
+            background: none;
+            border: none;
+            color: #0077B5;
+            font-size: 18px;
+            vertical-align: middle;
+        }
+        .alerta-proximo:hover {
+            color: #004c73;
+            transform: scale(1.2);
         }
 
 .foto-perfil img {
@@ -400,6 +424,21 @@
             header.style.fontWeight = 'bold';
             header.style.fontSize = '16px';
             header.textContent = rota;
+            
+            // Adiciona botão de alerta para próximo horário
+            const alertaProximo = document.createElement('button');
+            alertaProximo.className = 'alerta-proximo';
+            alertaProximo.innerHTML = '🔔';
+            alertaProximo.title = 'Receber alerta para próximo horário';
+            alertaProximo.onclick = function() {
+                const futuros = lista.filter(h => h.hora >= hora).sort((a, b) => a.hora.localeCompare(b.hora));
+                if (futuros.length > 0) {
+                    const proximoHorario = futuros[0].hora;
+                    configurarAlerta(rota, proximoHorario);
+                } else {
+                    alert('Não há mais horários disponíveis para hoje nesta rota.');
+                }
+            };
 
             // Cria o container dos horários
             const horariosDiv = document.createElement('div');
@@ -409,8 +448,24 @@
 
             if (futuros.length > 0) {
                 futuros.forEach(item => {
+                    const horarioSpan = document.createElement('span');
                     const legenda = gerarLegenda(item.obs);
-                    horariosDiv.innerHTML += legenda ? `${item.hora} - ${legenda}<br>` : `${item.hora}<br>`;
+                    
+                    horarioSpan.innerHTML = legenda ? `${item.hora} - ${legenda}` : `${item.hora}`;
+                    
+                    // Cria botão de sino
+                    const sinoBtn = document.createElement('button');
+                    sinoBtn.className = 'sino-btn';
+                    sinoBtn.innerHTML = '🔔';
+                    sinoBtn.title = 'Receber alerta para este horário';
+                    sinoBtn.onclick = function() {
+                        configurarAlerta(rota, item.hora);
+                    };
+                    
+                    // Adiciona ao container
+                    horariosDiv.appendChild(horarioSpan);
+                    horariosDiv.appendChild(sinoBtn);
+                    horariosDiv.appendChild(document.createElement('br'));
                 });
             } else {
                 horariosDiv.innerHTML += '<span class="sem-viagem">Não há mais viagens para a hora e data selecionada.</span>';
@@ -430,6 +485,7 @@
             // Monta o bloco
             div.appendChild(btn);
             div.appendChild(header);
+            div.appendChild(alertaProximo);
             div.appendChild(document.createElement('br'));
             div.appendChild(horariosDiv);
 
@@ -438,6 +494,69 @@
     }
 
     document.getElementById('buscaRota').addEventListener('input', procurarViagens);
+
+    // Função para solicitar permissão de notificação
+    function solicitarPermissaoNotificacao() {
+        if (!("Notification" in window)) {
+            alert("Este navegador não suporta notificações de desktop");
+        } else if (Notification.permission === "granted") {
+            return true;
+        } else if (Notification.permission !== "denied") {
+            Notification.requestPermission().then(function (permission) {
+                if (permission === "granted") {
+                    return true;
+                }
+            });
+        }
+        return Notification.permission === "granted";
+    }
+
+    // Função para configurar o alerta
+    function configurarAlerta(rota, horario) {
+        if (!solicitarPermissaoNotificacao()) {
+            alert("Você precisa permitir notificações para receber alertas de horários.");
+            return;
+        }
+
+        const mensagem = `Rota: ${rota}\nO ônibus do horário: ${horario} saiu do ponto final.`;
+        
+        // Obtém o horário atual e a hora configurada
+        const agora = new Date();
+        const [horas, minutos] = horario.split(':').map(Number);
+        const horaProgramada = new Date(agora);
+        
+        horaProgramada.setHours(horas, minutos, 0);
+        
+        // Se a hora já passou, não programa o alerta
+        if (horaProgramada < agora) {
+            alert("Este horário já passou.");
+            return;
+        }
+        
+        // Calcula o tempo até o horário (em milissegundos)
+        const tempoAteHorario = horaProgramada.getTime() - agora.getTime();
+        
+        // Adiciona uma entrada visual na página para mostrar que o alerta foi programado
+        alert(`Alerta programado para a rota "${rota}" às ${horario}`);
+        
+        // Programa o alerta
+        setTimeout(() => {
+            const notificacao = new Notification("Alerta de Ônibus", {
+                body: mensagem,
+                icon: "https://avatars.githubusercontent.com/u/39920231?v=4"
+            });
+            
+            notificacao.onclick = function() {
+                window.focus();
+                this.close();
+            };
+        }, tempoAteHorario);
+    }
+
+    // Verificar permissão de notificação ao carregar a página
+    window.addEventListener('load', function() {
+        solicitarPermissaoNotificacao();
+    });
 
     function compartilharSite() {
         if (navigator.share) {
